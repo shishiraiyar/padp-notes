@@ -188,7 +188,7 @@ Benchmarks:
 
 **Amdahl's Law**
 
-Speed up, S = T(1)/T(j)
+Speed up, $ S = \frac{T(1)}{T(j)}$
 
 T(1): Time taken by one processor
 
