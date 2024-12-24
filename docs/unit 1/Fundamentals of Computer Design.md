@@ -116,8 +116,6 @@ Transistor performance scales linearly
 
 Integration density scales quadratically
 
-
-
 **Power**:
 
 - Power consumption and cooling. 
@@ -134,13 +132,9 @@ Integration density scales quadratically
 
 - Dynamic voltage-frequency scaling
 
-
-
 ## Trends in Cost
 
 Probably out of syllabus
-
-
 
 ## Dependability
 
@@ -154,8 +148,6 @@ Probably out of syllabus
 
 > MTTF adds like parallel resistors
 
-
-
 ## Measuring Performance
 
 - Response time
@@ -166,8 +158,6 @@ Probably out of syllabus
 
 - CPU time
 
-
-
 Benchmarks:
 
 - Toy programs (eg: sorting)
@@ -176,17 +166,13 @@ Benchmarks:
 
 - Benchmark suites
 
-
-
 ## Principles of Computer Design
 
 - Take advantage of parallelism
 
 - Principle of Locality
 
-
-
-**Amdahl's Law**
+### Amdahl's Law
 
 Speed up, $ S = \frac{T(1)}{T(j)}$
 
@@ -197,3 +183,37 @@ T(j): Time taken by j processors
 $$
 S = \frac{N}{(B*N) + (1-B)}
 $$
+
+When some operations are optimized:
+
+$$
+Time_{new} = Time_{old} \times [(1 - frac_{enh}) + \frac{frac_{enh}}{speedup_{enh}}]
+$$
+
+$$
+Speedup_{overall} = \frac{Time_{old}}{Time_{new}}
+$$
+
+### Processor Performance Equation
+
+
+
+$$
+CPU time = \frac{CPU\ clock\ cycles\ for\ a\ program}{clock\ rate}
+$$
+
+
+
+$$
+CPI = \frac{CPU\ clock\ cycles\ for\ a\ program}{Instruction\ count}
+$$
+
+
+
+$$
+CPU\ clock\ cycles = \sum_{i=1}^n I \cdot C_i \times CPI_i
+$$
+
+
+
+
