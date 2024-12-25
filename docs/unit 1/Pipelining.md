@@ -46,7 +46,7 @@ We use a load-store architecture. So no instruction needs to both reading from m
 
 - Load instruction: Write the loaded value into a register
 
-
+Note that: We perform the register file reads in the second half of the cycle and the writes in the first half
 
 ## Pipeline speedup
 
@@ -94,6 +94,44 @@ Solutions:
 
 
 
+#### Forwarding
+
+- ALU result from both EX-MEM and MEM-WB pipeline registers is fed back to ALU input
+
+- If it is detected that previous ALU operation has written to a register that is source for this instruction, the forwarded value is used instead of the value read from the register file
+
+(Read tb for pipelining)
 
 
-1. **Control hazard**: Hazard due to control transfer
+
+## Control Hazard
+
+![](images/2024-12-25-12-45-58-image.png)
+
+### Static Branch Prediction
+
+A better approach is to assume the branch is not taken and continue execution
+
+aka **predicted-not-taken** scheme
+
+- After ID we know whether the branch is to be taken or not
+
+![](images/2024-12-25-12-48-09-image.png)
+
+No stall if branch is not taken
+
+Stall of one cycle if branch is taken
+
+
+
+### Branch Delay slot
+
+The only difference being, i+1 instruction is seen through to completion irrespective of whether the branch is taken or not
+
+![](images/2024-12-25-12-57-41-image.png)
+
+- If the compiler puts an instruction that is needed irrespective of whether the branch is taken or not as the (i+1)th instruction, then there is no stall.
+
+- If no such instruction is found compiler should insert an instruction that does nothing. Eg: ADD R0, R0, R0 (since R0 contains 0). 
+
+- Some assembly languages also have a NOP instruction that can be used here
