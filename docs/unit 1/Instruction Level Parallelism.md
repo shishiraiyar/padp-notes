@@ -8,8 +8,6 @@ weight: 3
 
 - Pipeline CPI = ideal pipeline CPI + Structural stalls + data hazard stalls + control stalls
 
-
-
 Data dependence:
 
 - True dependence: j needs results of i
@@ -34,17 +32,11 @@ Name dependence:
 
 - Instruction not dependent on a branch can't be moved aftet the branch
 
-
-
 ## Basic Pipeline Scheduling and Loop Unrolling
 
 **Pipeline scheduling**: Separate dependent instruction from source instruction by pipeline latency of source instruction
 
-
-
 ![](images/2024-12-25-14-35-12-image.png)
-
-
 
 **Loop unrolling**: Increase number of instructions relative to branch and overhead
 
@@ -54,13 +46,9 @@ Loop unrolling + scheduling can lead to optimization
 
 In real programs, we don't know the upper bound of the loop. Suppose it is n, we unroll the loop to make k copies of the body. We generate a pair of loops, first one up to n%k and has the body of the original loop. Second up to n/k and has the unrolled body. 
 
-
-
 Unrolled loop:
 
 ![](images/2024-12-25-14-48-57-image.png)
-
-
 
 After scheduling for pipeline:
 
@@ -76,8 +64,6 @@ Limitations:
 
 - Register shortage
 
-
-
 ## Reducing Branch Costs with Advanced Branch Prediction
 
 ### Correlating Branch Predictors
@@ -90,13 +76,9 @@ Limitations:
 
 (m, n) predictor has 2^m x n x number of entries bits
 
-
-
 ### Tournament predictor
 
 blah blah
-
-
 
 ## Overcoming Data Hazards with Dynamic Scheduling
 
@@ -114,8 +96,6 @@ Disadvantage:
 
 - Complicates exceptions
 
-
-
 Implies:
 
 - Out of order execution
@@ -123,8 +103,6 @@ Implies:
 - Out of order completion
 
 Might lead to WAR and WAW hazards which did not exist before
-
-
 
 To allow for out of order execution, ID stage is split into two stages:
 
@@ -134,8 +112,6 @@ To allow for out of order execution, ID stage is split into two stages:
 
 All instructions pass through the issue stage in order (in-order issue). However, they can be stalled or bypass each other in second stage (read operands)
 
-
-
 ## Tomasulo's Algorithm
 
 - RAW hazards are avoided by executing an instruction only when its operands are available
@@ -144,18 +120,12 @@ All instructions pass through the issue stage in order (in-order issue). However
 
 - Register renaming is handled by **reservation stations** which buffer the operands of instructions
 
-
-
 Two important properties:
 
 - Every functional unit determines whether an instructino can begin execution at that unit. Hazard detection and execution control are distributed
 
 - Results are passed directly to functional units from reservation stations without going through registers through a **common data bus**. In pipelines with multiple execution units, multiple result buses are needed
 
-
-
 Tomasulo's architecture
 
 ![](images/2024-12-25-16-00-24-image.png)
-
-
