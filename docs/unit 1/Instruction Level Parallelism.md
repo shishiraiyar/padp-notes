@@ -129,3 +129,65 @@ Two important properties:
 Tomasulo's architecture
 
 ![](images/2024-12-25-16-00-24-image.png)
+
+
+
+## Hardware based speculation
+
+- Dynamic branch prediction
+
+- Speculation and undo
+
+- Dynamic scheduling
+
+
+
+To extend Tomasulo's algorithm:
+
+- We must separate bypassing of results among instructions from actual completion of instruction
+
+- Instruction can execute and bypass its results to other instructions without allowing them to perform any updates that can't be undone until we know for sure that the branch is no longer speculative
+
+- When we know it's no longer speculative, we **commit** the results
+
+- Execute out of order but commit in order
+
+- **Reorder buffer**: Holds results that have finished execution but not yet committed
+
+- ROB supplies operands after execution and before commit
+
+
+
+Four fields:
+
+- Instruction type (branch, store or register operation)
+
+- Destination (register or memory location)
+
+- Value
+
+- Ready (shows that value is ready)
+
+
+
+![](images/2024-12-25-23-42-56-image.png)
+
+
+
+
+
+
+
+Four steps:
+
+- Issue
+
+- Execute
+
+- Write result
+
+- Commit
+
+
+
+READ TB AGAIN YOU SLEEPY!!
