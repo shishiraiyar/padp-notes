@@ -1,3 +1,7 @@
+---
+weight: 1
+---
+
 # Fundamentals Of Computer Design
 
 ## Classes of Computers

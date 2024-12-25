@@ -1,3 +1,7 @@
+---
+weight: 3
+---
+
 # Instruction Level Parallelism
 
 - Goal is to maximize CPI

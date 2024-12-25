@@ -1,3 +1,7 @@
+---
+weight: 2
+---
+
 # Pipelining
 
 ## Five stages of execution
