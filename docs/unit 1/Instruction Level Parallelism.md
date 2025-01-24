@@ -4,7 +4,7 @@ weight: 3
 
 # Instruction Level Parallelism
 
-- Goal is to maximize CPI
+- Goal is to minimize CPI
 
 - Pipeline CPI = ideal pipeline CPI + Structural stalls + data hazard stalls + control stalls
 
@@ -132,6 +132,8 @@ Tomasulo's architecture
 
 
 
+![](images/2024-12-25-18-15-17-image.png)
+
 ## Hardware based speculation
 
 - Dynamic branch prediction
@@ -139,8 +141,6 @@ Tomasulo's architecture
 - Speculation and undo
 
 - Dynamic scheduling
-
-
 
 To extend Tomasulo's algorithm:
 
@@ -156,8 +156,6 @@ To extend Tomasulo's algorithm:
 
 - ROB supplies operands after execution and before commit
 
-
-
 Four fields:
 
 - Instruction type (branch, store or register operation)
@@ -168,15 +166,7 @@ Four fields:
 
 - Ready (shows that value is ready)
 
-
-
 ![](images/2024-12-25-23-42-56-image.png)
-
-
-
-
-
-
 
 Four steps:
 
@@ -187,7 +177,5 @@ Four steps:
 - Write result
 
 - Commit
-
-
 
 READ TB AGAIN YOU SLEEPY!!
