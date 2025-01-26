@@ -221,8 +221,6 @@ Local node may be the home node, but still we need to look at directory (there m
 
 ### An Example Directory Protocol
 
-
-
 #### Cache Block State Diagram
 
 ![](images/2025-01-24-11-44-10-image.png)
@@ -273,8 +271,6 @@ The arrows show transitions between states triggered by actions (CPU requests or
    **Shared** as needed.
 3. **Fetch Invalidate**:
 - If another processor requests ownership, the cache transitions to **Invalid** after writing back the block to memory.
-
-
 
 #### Directory State Diagram
 
@@ -340,13 +336,9 @@ The transitions occur based on **read or write requests** and are managed by the
 - **Fetch/Invalidate**: The directory fetches the block from a processor that holds it (in case of a miss) and invalidates other copies.
 - **Update Sharers**: The directory keeps track of which processors hold the block.
 
-
-
 ## Synchronization: The Basics
 
 - Built with user-level software that rely on hardware-supplied synchronization instructions
-
-
 
 ### Basic Hardware Primitives
 
@@ -367,3 +359,114 @@ The transitions occur based on **read or write requests** and are managed by the
 If the contents of the memory location specified by the LL are changed before the SC, the SC fails. If the processor does a context switch, then also SC fails.
 
 SC returns 1 if it is successful. Else it returns 0.
+
+![](images/2025-01-26-16-18-24-image.png)
+
+If some other processor had modified the value, SC puts 0 in R3
+
+**fetch and increment using LL SC**
+
+![](images/2025-01-26-16-22-21-image.png)
+
+### Implementing Locks using Coherence
+
+**spin locks**: Locks that a processor continuously tries to acquire, spinning around a loop until it succeeds
+
+Used when lock is expected to be held for a very short amount of time
+
+![](images/2025-01-26-16-26-19-image.png)
+
+If processor supports cache coherence, we can cache the locks using coherence mechanism
+
+Caching is advantageous because:
+
+- Faster from cache
+
+- A processor that just acquired the lock is likely to acquire it again (temporal locality)
+
+But the above code isn't good for this since all processors are trying to write to the lock
+
+They should first read the lock then attempt to write to it
+
+![](images/2025-01-26-16-30-37-image.png)
+
+![](images/2025-01-26-16-42-36-image.png)
+
+
+
+
+
+blah blah
+
+![](images/2025-01-26-17-48-04-image.png)
+
+
+
+
+
+## Models of Memory Consistency
+
+- How consistent should the view of memory be
+
+
+
+![](images/2025-01-26-17-51-47-image.png)
+
+
+
+- **Sequential Consistency**: Result of an execution be the same as if the memory accesses executed by each processor were kept in order and the accesses among different processors were arbitrarily interleaved
+
+- Then the if statements won't be executed in the previous examples as the assignments must be completed before the if statements
+
+
+
+- Simplest way to implement: Delay the completion of a memory access until all the invalidations caused by that access are completed
+
+- Or delay the next memory access until the previous one is completed
+
+- delay the read of A or B (A == 0 or B == 0) until the previous write has been completed (A=1 or B=1)
+
+- It reduces potential performance
+
+
+
+### The Programmer's View
+
+- Assume that programs are synchronized
+
+We say that a data reference is ordered by a synchronization operation if in every possible execution: 
+
+- The write of a variable by one processor is followed by a **synchronization operation**
+- The access (read or write) of that same variable by another processor is preceded by a **synchronization operation** (e.g., acquiring the same lock or reading from the same barrier).
+
+
+
+Cases where variables may be updated without synchronization are called **data races**
+
+synchronized programs are **data-race-free**
+
+Eg: Obtain lock before access and unlock after access
+
+
+
+### Relaxed Consistency Models
+
+- Allow reads and writes to complete out of order, but use synchronization operations to enforce ordering
+
+- X -> Y: X should complete before Y
+
+- Four orderings: R->W, R->R, W->R, W->W
+
+
+
+1. Relaxing W->R yields **total store ordering**
+
+2. Relaxing W->W yields **partial store order**
+
+3. Relaxing R->W and R->R yields **weak ordering** and **release consistency**
+
+By relaxing these orderings, the processor might obtain significant performance advantage. But it gets complicated.
+
+
+
+Nowadays most multiprocessors support some sort of relaxed consistency model, with the expectation that the programmers would use standard synchronization libraries when needed
