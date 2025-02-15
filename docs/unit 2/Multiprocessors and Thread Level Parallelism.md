@@ -100,6 +100,18 @@ Long communication delay
 
 - Coherence misses: true/false sharing misses
 
+
+
+![](images/2025-01-26-20-47-06-image.png)
+
+
+
+**Another example**
+
+![](images/2025-01-26-20-49-06-WhatsApp%20Image%202025-01-26%20at%2020.48.37_5918e8be.jpg)
+
+Initially both are uncached. That's why there's a compulsory miss.
+
 ### Performance measurements of a commercial workload:
 
 - Increasing the L3 cache size eliminates uniprocessor misses, but leaves the multiprocessor misses untouched
@@ -392,33 +404,19 @@ They should first read the lock then attempt to write to it
 
 ![](images/2025-01-26-16-42-36-image.png)
 
-
-
-
-
 blah blah
 
 ![](images/2025-01-26-17-48-04-image.png)
-
-
-
-
 
 ## Models of Memory Consistency
 
 - How consistent should the view of memory be
 
-
-
 ![](images/2025-01-26-17-51-47-image.png)
-
-
 
 - **Sequential Consistency**: Result of an execution be the same as if the memory accesses executed by each processor were kept in order and the accesses among different processors were arbitrarily interleaved
 
 - Then the if statements won't be executed in the previous examples as the assignments must be completed before the if statements
-
-
 
 - Simplest way to implement: Delay the completion of a memory access until all the invalidations caused by that access are completed
 
@@ -427,8 +425,6 @@ blah blah
 - delay the read of A or B (A == 0 or B == 0) until the previous write has been completed (A=1 or B=1)
 
 - It reduces potential performance
-
-
 
 ### The Programmer's View
 
@@ -439,15 +435,11 @@ We say that a data reference is ordered by a synchronization operation if in eve
 - The write of a variable by one processor is followed by a **synchronization operation**
 - The access (read or write) of that same variable by another processor is preceded by a **synchronization operation** (e.g., acquiring the same lock or reading from the same barrier).
 
-
-
 Cases where variables may be updated without synchronization are called **data races**
 
 synchronized programs are **data-race-free**
 
 Eg: Obtain lock before access and unlock after access
-
-
 
 ### Relaxed Consistency Models
 
@@ -456,9 +448,6 @@ Eg: Obtain lock before access and unlock after access
 - X -> Y: X should complete before Y
 
 - Four orderings: R->W, R->R, W->R, W->W
-
-
-
 1. Relaxing W->R yields **total store ordering**
 
 2. Relaxing W->W yields **partial store order**
@@ -466,7 +455,5 @@ Eg: Obtain lock before access and unlock after access
 3. Relaxing R->W and R->R yields **weak ordering** and **release consistency**
 
 By relaxing these orderings, the processor might obtain significant performance advantage. But it gets complicated.
-
-
 
 Nowadays most multiprocessors support some sort of relaxed consistency model, with the expectation that the programmers would use standard synchronization libraries when needed
