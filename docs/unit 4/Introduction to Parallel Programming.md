@@ -343,8 +343,6 @@ Mapping techniques are broadly classified into:
 
 ![](images/2025-02-15-10-32-40-image.png)
 
-
-
 #### Mappings based on Task Partitioning
 
 - Partitioning a task dependency graph
@@ -363,15 +361,11 @@ Mapping techniques are broadly classified into:
 
 - Another example: Sparse matrix multiplication
 
-
-
 #### Hierarchical Mappings
 
 - Tasks at higher level are further divided into smaller subtasks
 
 ![](images/2025-02-15-11-04-05-image.png)
-
-
 
 ### Schemes for Dynamic Mapping
 
@@ -380,8 +374,6 @@ Mapping techniques are broadly classified into:
 - Or when task dependency graph itself is dynamic
 
 - Classified as centralized or distributed
-
-
 
 #### Centralized Schemes
 
@@ -403,15 +395,11 @@ Mapping techniques are broadly classified into:
 
 - Initially large chunk size, reduce the chunk size as program progresses
 
-
-
 #### Distributed Schemes
 
 - Processors exchange tasks at run time to balance work
 
 - Processes can send work to each other
-
-
 
 #### Suitability to parallel architectures
 
@@ -423,21 +411,15 @@ Mapping techniques are broadly classified into:
 
 - In shared address space, tasks don't need to be moved around, but cache coherence still needs to be handled
 
-
-
 ## Methods for Containing Interaction Overheads
 
 - Interaction overhead depends on volume of data exchanged, frequency of interactions and the spatial and temporal pattern of interactions
-
-
 
 ### Maximizing Data locality
 
 - Processes may share input data
 
 - Processes may also need data from each other
-
-
 
 #### Minimize Volume of Data Exchange
 
@@ -448,8 +430,6 @@ Mapping techniques are broadly classified into:
 - Higher dimensional distribution often helps reduce the amount of non local data that needs to be accessed
 
 - Another method is to store intermediate results within, and access the shared data only at the end to write the final result
-
-
 
 #### Minimize Frequency of Interactions
 
@@ -463,8 +443,6 @@ Mapping techniques are broadly classified into:
 
 - Eg: In sparse matrix multiplication, first get all the input elements you need, then start calculation
 
-
-
 ### Minimizing Contention and Hot Spots
 
 - Contention occurs when multiple processes use same resources simultaneously
@@ -476,8 +454,6 @@ Mapping techniques are broadly classified into:
 - They can only access this memory one by one
 
 - Instead change the order of evaluation so different memory addresses are needed simultaneously by different processes
-
-
 
 ### Overlapping Computations with Interactions
 
@@ -493,8 +469,6 @@ Mapping techniques are broadly classified into:
 
 - In shared address space, this is assisted by prefetching
 
-
-
 ### Replicating Data or Computations
 
 - Keep a copy of shared read-only data on each process
@@ -509,8 +483,6 @@ Mapping techniques are broadly classified into:
 
 - Trading message passing for additional computation
 
-
-
 ### Using Optimized Collective Interaction Operations
 
 - Eg: Broadcasting some data to all the processes
@@ -519,23 +491,15 @@ Mapping techniques are broadly classified into:
 
 - Use highly optimized implementations of these commonly appearing collective operations
 
-
-
 ### Overlapping Interactions with Other Interactions
 
 - Eg: Broadcasting data from p0 to all the processes can be done like this
-
-
 
 ![](images/2025-02-15-11-50-28-image.png)
 
 - But sometimes the naive way (b) can be adapted to increase the amount of overlap. Eg:
 
 ![](images/2025-02-15-11-51-17-image.png)
-
-
-
-
 
 ## Parallel Algorithm Models
 
@@ -561,8 +525,6 @@ Mapping techniques are broadly classified into:
 
 - Eg: Matrix multiplication
 
-
-
 ### Task Graph Model
 
 - Interrelations among tasks are used to promote locality and reduce interactions
@@ -583,8 +545,6 @@ Mapping techniques are broadly classified into:
 
 - Eg: Parallel quicksort
 
-
-
 ### Work Pool Model
 
 - Dynamic mapping of tasks onto processes
@@ -602,8 +562,6 @@ Mapping techniques are broadly classified into:
 - Adjust the granularity according to the tradeoff between load imbalance and overhead of accessing the work pool
 
 - Eg: Chunk scheduling of for loops
-
-
 
 ### Master Slave model
 
@@ -623,8 +581,6 @@ Mapping techniques are broadly classified into:
 
 - Ensure that master does not become a bottleneck. Adjust granularity accordingly
 
-
-
 ### Pipeline or Producer-Consumer model
 
 - aka **stream parallelism**
@@ -642,10 +598,6 @@ Mapping techniques are broadly classified into:
 - But too small of a granularity may increase interaction overheads
 
 - Reduce interaction by overlapping interaction with compuation
-
-
-
-
 
 ### Hybrid models
 
