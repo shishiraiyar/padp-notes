@@ -337,10 +337,6 @@ int MPI_Sendrecv_replace(void *buf, int count,
 
 Here both send and recv datatypes should be same
 
-
-
-
-
 ## Topologies and Embedding
 
 - MPI assumes a 1-d topology by default and numbers processes linearly
@@ -351,8 +347,6 @@ Here both send and recv datatypes should be same
 
 ![](images/2025-03-21-18-58-41-image.png)
 
-
-
 - Goodness of a mapping is determined by the pattern of interaction among the processes in the higher-dimensional topology, connectivity of physical processors and the mapping of MPI processes to physical processors.
 
 - We can't perform topology embeddings in an intelligent manner for different architectures
@@ -360,8 +354,6 @@ Here both send and recv datatypes should be same
 - It is better to let the library handle the embedding of a given topology
 
 - MPI provides a set of routines to arrange processes in different topologies
-
-
 
 ### Creating and Using Cartesian Topologies
 
@@ -372,8 +364,6 @@ Here both send and recv datatypes should be same
 - But most commonly grids are used (**Cartesian topology**)
 
 - MPI provides specialized routines for multi-dimensional grids
-
-
 
 ```c
 int MPI_Cart_create(MPI_Comm comm_old, int ndims, 
@@ -405,8 +395,6 @@ int MPI_Cart_coord(MPI_Comm comm_cart, int rank, int maxdims, int *coords);
 
 (maxdims is the maxdims in the coords array that u pass. I'm guessing it exists to prevent any buffer overflow BS.)
 
-
-
 ```c
 int MPI_Cart_shift(MPI_Comm comm_cart, int dir, int s_step, int *rank_source, int *rank_dest);
 ```
@@ -414,8 +402,6 @@ int MPI_Cart_shift(MPI_Comm comm_cart, int dir, int s_step, int *rank_source, in
 - This gives the rank of the source and the destination if you shift by `s_steps` steps along the `dir` dimension.
 
 - If `periods[dir]` is true it wraps around.
-
-
 
 ## Overlapping Communication with Computation
 
@@ -450,8 +436,6 @@ int MPI_Wait(MPI_Request *request, MPI_Status *status);
 
 - `status` object contains information if operation was completed
 
-
-
 - To explicitly deallocate a request object:
 
 ```c
@@ -461,8 +445,6 @@ int MPI_Request_free(MPI_Request *request);
 - But be careful when using this as we have no other way of checking if a non-blocking operation has completed
 
 - Non-blocking send can be received by a blocking receive and vice versa
-
-
 
 **Avoiding deadlock**:
 
@@ -482,15 +464,9 @@ else if (myrank == 1) {
 }
 ```
 
-
-
 ## Collective Communication and Computation Operations
 
 - To use: All processes in the communication group must call
-
-
-
-
 
 ### Barrier
 
@@ -500,16 +476,12 @@ else if (myrank == 1) {
 int MPI_Barrier(MPI_Comm comm);
 ```
 
-
-
 ### Broadcast
 
 ```c
 int MPI_Bcast(void *buf, int count, MPI_Datatype datatype,
               int source, MPI_Comm comm);
 ```
-
-
 
 ### Reduction
 
@@ -518,3 +490,175 @@ int MPI_Reduce(void *sendbuf, void *recvbuf, int count,
                MPI_Datatype datatype, MPI_Op op,
                int target, MPI_Comm comm);
 ```
+
+- Combines the elements in `sendbuf` of each process using the operation `op` and puts the result in `recvbuf` of the `target` process.
+
+- All processes must provide a `recvbuf` even if they are not the target
+
+- When `count` is more than one, reduction is applied element-wise on `sendbuf`
+
+```c
+MPI_MAX:    Maximum
+MPI_MIN:    Minimum
+MPI_SUM:    Sum
+MPI_PROD:    Product
+
+MPI_LAND:    Logical AND
+MPI_LOR:    Logical OR
+MPI_LXOR:    Logical XOR
+
+MPI_BAND:    Bit-wise AND
+MPI_BOR:    Bit-wise OR
+MPI_BXOR:    Bitwise XOR
+
+MPI_MAXLOC: Returns max element and the rank of the process which holds that value
+MPI_MINLOC: Returns min element and the rank of the process which holds that value
+```
+
+- To hold the pair of numbers for `MPI_MAXLOC` and `MPI_MINLOC` use `MPI_2INT` datatype
+
+- Reduce and give the output to all processes:
+
+```c
+int MPI_Allreduce(void *sendbuf, void *recvbuf, int count,
+                  MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
+```
+
+- No target
+
+### Prefix
+
+- Prefix reduction
+
+```c
+int MPI_Scan(void *sendbuf, void *recvbuf, int count,
+             MPI_Datatype datatype, MPI_Op op, MPI_Comm comm);
+```
+
+- $i^{th}$ process holds the reduced value for the elements held by $0^{th}$ to $i^{th}$ processes
+
+### Gather
+
+```c
+int MPI_Gather(void *sendbuf, int sendcount, MPI_Datatype senddatatype, 
+               void *recvbuf, int recvcount, MPI_Datatype recvdatatype,
+               int target, MPI_Comm comm);
+```
+
+- Each process sends the data stored in `sendbuf` to the `target` process
+
+- Every process must send with the same count and datatype
+
+- `recvcount` must be same as `sendcount` (then why does it exist?)
+
+```c
+MPI_Allgather(void *sendbuf, int sendcount, MPI_Datatype senddatatype, 
+              void *recvbuf, int recvcount, MPI_Datatype recvdatatype,
+              MPI_Comm comm);
+```
+
+- Here every process must provide a valid recvbuf
+
+- Vector variants for when different processes need to send different sized buffers:
+
+```c
+int MPI_Gatherv(void *sendbuf, int sendcount, MPI_Datatype senddatatype, 
+                void *recvbuf, int *recvcounts, int *displs,
+                MPI_Datatype recvdatatype, int target, MPI_Comm comm);
+```
+
+- Here `recvcounts` is an array of recvcounts of each process
+
+- `displs[i]` determines where in `recvbuf` the data sent by $i^{th}$ process is stored
+
+```c
+int MPI_Allgatherv(void *sendbuf, int sendcount, MPI_Datatype senddatatype, 
+                   void *recvbuf, int *recvcounts, int *displs, 
+                   MPI_Datatype recvdatatype, MPI_Comm comm);
+```
+
+
+
+### Scatter
+
+```c
+int MPI_Scatter(void *sendbuf, int sendcount, MPI_Datatype senddatatype,
+                void *recvbuf, int recvcount, MPI_Datatype recvdatatype,
+                int source, MPI_Comm comm);
+```
+
+- `source` process sends a diffferent part of `sendbuf` to each process
+
+- Process i receives `sendcount` contiguous elements starting from `i * sendcount` location of `sendbuf`
+
+
+
+```c
+int MPI_Scatterv(void *sendbuf, int *sendcounts, int *displs,
+                 MPI_Datatype senddatatype, void *recvbuf, int recvcount, 
+                 MPI_Datatype recvdatatype, int source, MPI_Comm comm);
+```
+
+- `displs[i]` holds the starting location in `sendbuf` of the data that should go to $i^{th}$ process
+
+
+
+### All to All
+
+> I won't even try to explain this 🤦‍♂️
+
+```c
+int MPI_Alltoall(void *sendbuf, int sendcount, MPI_Datatype senddatatype,
+                 void *recvbuf, int recvcount, MPI_Datatype recvdatatype, 
+                 MPI_Comm comm);
+```
+
+
+
+```c
+int MPI_Alltoallv(void *sendbuf, int *sendcounts, int *sdispls,
+                  MPI_Datatype senddatatype, void *recvbuf, int *recvcounts,
+                  int *rdispls, MPI_Datatype recvdatatype, MPI_Comm comm);
+```
+
+
+
+## Groups and Communicators
+
+```c
+int MPI_Comm_split(MPI_Comm comm, int colour,
+                   int key, MPI_Comm *newcomm);
+```
+
+- All processes that supplied the same value for `colour` will end up in the same subgroup
+
+- Within each subgroup, processes are ranked in the order defined by `key`
+
+- Ties are broken according to their rank in the old communicator
+
+
+
+**Splitting Cartesian Topologies**
+
+```c
+int MPI_Cart_sub(MPI_Comm comm_cart, int *keep_dims, 
+                 MPI_Comm comm_subcart);
+```
+
+- If `keep_dims[i]` is true, $i^{th}$ dimension is kept in the sub topology
+
+- Eg: 
+
+![](images/2025-03-22-14-30-10-image.png)
+
+
+
+Eg: 
+
+- Assume a topology with size d1 x d2 x d3. 
+
+- Assume `keep_dims` is `true, false, true`.
+
+- All processes with coordinates `(*, y, *)` belong to the same sub topology
+
+- And the coordinate of this process in the new topology is `(x, z)`. (disregard y)
