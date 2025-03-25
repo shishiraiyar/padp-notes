@@ -56,6 +56,27 @@ Long communication delay
 
 ![](images/2024-12-25-19-48-21-image.png)
 
+## Snooping Protocol
+
+- Write invalidate protocol
+- All processors are snooping on the shared bus
+- When a processor writes, each processor checks if it has that address in its cache. If so, that address is marked as invalidated
+- If two processes try to write at the same time, bus arbitration makes one of them win
+- Serialization enforced by the bus also serializes the writes
+- If processor A reads a value that processor B has a dirty copy of, B responds to the read (instead of memory)
+- Each cache block also has a bit flag: shared. This determines whether invalidation is generated or not
+- Each cache block has three states: Invalid, Shared, Modified
+
+![](images/2025-03-25-16-45-59-image.png)
+
+
+
+**Combined diagram**
+
+![](images/2025-03-25-17-45-23-image.png)
+
+
+
 ---
 
 > Read from here for CIE 2
@@ -100,11 +121,7 @@ Long communication delay
 
 - Coherence misses: true/false sharing misses
 
-
-
 ![](images/2025-01-26-20-47-06-image.png)
-
-
 
 **Another example**
 
