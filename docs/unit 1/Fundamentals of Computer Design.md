@@ -172,11 +172,13 @@ Benchmarks:
 
 ## Principles of Computer Design
 
-- Take advantage of parallelism
+1. Take Advantage of Parallelism (explain pipelining, DLP etc)
+2. Principle of Locality (spatial and temporal)
+3. Focus on the Common Case (try to optimize what is most used)
+4. Amdahl's law
 
-- Principle of Locality
 
-### Amdahl's Law
+## Amdahl's Law
 
 Speed up, $ S = \frac{T(1)}{T(j)}$
 
